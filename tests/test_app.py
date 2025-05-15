@@ -99,7 +99,7 @@ def test_new_spaces_form(page, test_web_address):
     available_to_label = page.locator("#available_to_date")
     assert available_to_label.is_visible()
 
-    submit_button = page.locator("button[type='submit']")
+    submit_button = page.locator("input[type='submit']:has-text('Create Space')")
     assert submit_button.is_visible()
 
     # submit_button = page.locator("submit")
