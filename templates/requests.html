@@ -9,8 +9,18 @@
     </head>
     <body>
         <div id="logo">
-            <a href="index.html">
+            <a href="/">
                 <img src="/static/logo.png" alt="The BnBugs">
+            </a>
+        </div>
+        <div id="logout_button">
+            <a href="/logout">
+                <button type="submit">Logout</button>
+            </a>
+        </div>
+        <div id="list_button">
+            <a href="/spaces">
+                <button type="submit">View Spaces</button>
             </a>
         </div>
         <h1>{{ user.user_name }}'s Requests</h1>

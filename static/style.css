@@ -25,6 +25,18 @@ span.space_name {
     font-weight: bold;
 }
 
+#list_button {
+    position: absolute;
+    top: 30px;
+    right: 40px;
+}
+
+#logout_button {
+    position: absolute;
+    top: 30px;
+    right: 150px;
+}
+
 #logo { 
     float: left;
     height: 80px;
