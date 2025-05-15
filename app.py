@@ -207,6 +207,24 @@ def get_user_request_update(id, action):
     
     return redirect("/requests")
 
+@app.route("/spaces", methods=['GET'])
+def get_all_spaces():
+    connection = get_flask_database_connection(app)
+    repository = SpaceRepository(connection)
+    all_spaces = repository.all()
+
+    from_date = request.args.get("available_from_date")
+    to_date = request.args.get("available_to_date")
+
+
+    if from_date and to_date:
+        filtered_spaces = [
+            space for space in all_spaces
+            if str(space.available_from_date) <= to_date and str(space.available_to_date) >= from_date
+        ]
+        return render_template("spaces.html", spaces=filtered_spaces,selected_from=from_date, selected_to=to_date)
+
+    return render_template("spaces.html", spaces=all_spaces,selected_from="0000-01-01", selected_to="9999-12-31")
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database
