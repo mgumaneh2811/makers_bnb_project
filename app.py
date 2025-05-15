@@ -1,6 +1,6 @@
 import os
 from flask import Flask, request, redirect, render_template, flash
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from lib.forms import LoginForm
 from lib.database_connection import get_flask_database_connection
 from lib.user import User
@@ -100,6 +100,7 @@ def post_new_space():
     return '', 200
 
 @app.route('/spaces/request/<space_id>', methods=['GET'])
+@login_required
 def get_request_space(space_id):
     connection = get_flask_database_connection(app)
     booking_repo = BookingRepository(connection)
@@ -108,9 +109,10 @@ def get_request_space(space_id):
     bookings = booking_repo.find_for_space(space_id)
     space = space_repo.find(space_id)
 
-    return render_template('request_a_space.html', user_id = 1, space = space, bookings = bookings)
+    return render_template('request_a_space.html', user = current_user, space = space, bookings = bookings)
 
 @app.route('/spaces/request', methods=['POST'])
+@login_required
 def post_request_space():
     space_id = request.form['space_id']
     requested_date = datetime.strptime(request.form['requested_date'], '%Y-%m-%d').date()
@@ -124,89 +126,93 @@ def post_request_space():
     space = space_repo.find(space_id)
 
     requested_date_str = datetime.strftime(requested_date,"%d %B %Y")
-    return render_template('space_requested.html', space=space, requested_date_str = requested_date_str )
+    return render_template('space_requested.html', user = current_user, space=space, requested_date_str = requested_date_str )
 
 @app.route('/requests', methods=['GET'])
+@login_required
 def get_requests():
-    user_id = 1 # TODO: user session stuff!!!
-
     connection = get_flask_database_connection(app)
     booking_repo = BookingRepository(connection)
 
-    bookings_made = booking_repo.find_for_user(user_id)
+    bookings_made = booking_repo.find_for_user(current_user.id)
     bookings_made_with_details = []
     for booking in bookings_made:
         bookings_made_with_details.append(collate_booking_details(booking))
 
-    bookings_received = booking_repo.find_for_users_spaces(user_id)
+    bookings_received = booking_repo.find_for_users_spaces(current_user.id)
     bookings_received_with_details = []
     for booking in bookings_received:
         bookings_received_with_details.append(collate_booking_details(booking))
 
-    return render_template('requests.html', bookings_made = bookings_made_with_details, bookings_received = bookings_received_with_details)
+    return render_template('requests.html', user = current_user, bookings_made = bookings_made_with_details, bookings_received = bookings_received_with_details)
 
 def collate_booking_details(booking):
-    #connection = get_flask_database_connection(app)
-    #spaces_repo = SpacesRepository(connection)
+    connection = get_flask_database_connection(app)
+    spaces_repo = SpaceRepository(connection)
+    user_repo = UserRepository(connection)
 
-    #space = spaces_repo.find(booking.spoace_id)
+    space = spaces_repo.find(booking.space_id)
+    user = user_repo.find(booking.user_id)
     booking_details = {
         'id': booking.id,
-        'space_name': 'Space Name Goes Here',
-        #'space_name': space.space_name,
+        'space_id': space.id,
+        'space_name': space.space_name,
         'booking_date': booking.booking_date,
-        'status': booking.status
+        'status': booking.status,
+        'requesting_user_name': user.user_name
     }
 
     return booking_details
 
 @app.route('/requests/<id>', methods=['GET'])
+@login_required
 def get_request(id):
-    user_id = 1 # TODO: user session stuff!!!
-    # TODO: Space details
-
     connection = get_flask_database_connection(app)
     booking_repo = BookingRepository(connection)
     user_repo = UserRepository(connection)
-    #space_repo = SpacesRepository(connection)
+    space_repo = SpaceRepository(connection)
 
     booking = booking_repo.find(id)
     requesting_user = user_repo.find(booking.user_id)
-    #space = space_repo.find(booking.space_id)
+    space = space_repo.find(booking.space_id)
 
-    #space_user_id = space.user_id
-    space_user_id = 1
+    other_requests = booking_repo.find_for_space(booking.space_id)
 
-    if space_user_id == user_id:
+    other_requests_with_details = []
+    for request in other_requests:
+        if request.id != booking.id:
+            other_requests_with_details.append(collate_booking_details(request))
+
+    if space.user_id == current_user.id:
         page_mode = 'approver'
     else:
         page_mode = ''
 
-    return render_template('view_request.html', id=id, page_mode=page_mode, booking=booking, requesting_user=requesting_user)
+    return render_template('view_request.html', id=id, page_mode=page_mode, other_requests=other_requests_with_details, space=space, booking=booking, requesting_user=requesting_user)
 
-@app.route('/requests/<id>/<action>', methods=['GET'])
-def get_user_request_update(id, action):
-    user_id = 1 # TODO: user session stuff!!!
-
+@app.route('/requests/<id>', methods=['POST'])
+@login_required
+def get_user_request_update(id):
     connection = get_flask_database_connection(app)
     booking_repo = BookingRepository(connection)
-    space_repo = SpacesRepository(connection)
+    space_repo = SpaceRepository(connection)
 
     booking = booking_repo.find(id)
     space = space_repo.find(booking.space_id)
 
     space_user_id = space.user_id
 
+    action = request.form['action'] 
+
     if action == 'approve':
         new_status = "Booked"
     if action == 'deny':
         new_status = "Rejected"
     
-    if action != None and space_user_id == user_id:
-            booking_repo.update_status(id, new_status)
+    if action != None and space_user_id == current_user.id:
+        booking_repo.update_status(id, new_status)
     
     return redirect("/requests")
-
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database
