@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, redirect, render_template, flash
+from flask import Flask, request, redirect, render_template, flash, url_for
 from flask_login import LoginManager, login_user, logout_user, login_required
 from lib.forms import LoginForm
 from lib.database_connection import get_flask_database_connection
@@ -58,6 +58,10 @@ def post_users():
 def get_list_a_space():
     return render_template('list_a_space.html')
 
+@app.route("/list_a_space")
+def list_a_space():
+    return render_template("list_a_space.html")
+
 
 # @app.route('/login', methods=['GET'])
 # def get_login_page():
@@ -85,9 +89,9 @@ def logout():
     logout_user()
     return redirect('/login')
 
-@app.route('/spaces', methods=['GET'])
-def get_spaces():
-    return render_template('spaces.html')
+# @app.route('/spaces', methods=['GET'])
+# def get_spaces():
+#     return render_template('spaces.html')
 
 @app.route('/spaces/new', methods =['POST'])
 def post_new_space():
@@ -97,7 +101,7 @@ def post_new_space():
     repository = SpaceRepository(connection)
     space = Space(None, request.form['space_name'], request.form['spaces_description'], request.form['price_per_night'], request.form['available_from_date'], request.form['available_to_date'], request.form['user_id'])
     repository.create(space)
-    return '', 200
+    return redirect(url_for('list_a_space'))
 
 @app.route('/spaces/request/<space_id>', methods=['GET'])
 def get_request_space(space_id):
@@ -216,15 +220,15 @@ def get_all_spaces():
     from_date = request.args.get("available_from_date")
     to_date = request.args.get("available_to_date")
 
-
     if from_date and to_date:
         filtered_spaces = [
             space for space in all_spaces
             if str(space.available_from_date) <= to_date and str(space.available_to_date) >= from_date
         ]
-        return render_template("spaces.html", spaces=filtered_spaces,selected_from=from_date, selected_to=to_date)
+        return render_template("spaces.html", spaces=filtered_spaces, selected_from=from_date, selected_to=to_date)
 
-    return render_template("spaces.html", spaces=all_spaces,selected_from="0000-01-01", selected_to="9999-12-31")
+    # Default: show everything with no filtering
+    return render_template("spaces.html", spaces=all_spaces, selected_from="", selected_to="")
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database

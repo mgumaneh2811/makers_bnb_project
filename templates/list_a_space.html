@@ -63,13 +63,13 @@
 </head>
 <body>
     <div id="logo">
-        <a href="index.html">
-            <img src="../static/logo.png" alt="The BnBugs">
+        <a href="{{ url_for('get_index') }}">
+            <img src="../static/logo.png" alt="Bugsy's">
         </a>
     </div>
     
     <div id="list_button">
-        <a href="spaces.html">
+        <a href="{{ url_for('get_all_spaces') }}">
             <button type="submit">View Spaces</button>
         </a>
     </div>
