@@ -31,10 +31,16 @@ span.space_name {
     right: 40px;
 }
 
+#requests_button {
+    position: absolute;
+    top: 30px;
+    right: 130px;
+}
+
 #logout_button {
     position: absolute;
     top: 30px;
-    right: 150px;
+    right: 230px;
 }
 
 #logo { 

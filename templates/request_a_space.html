@@ -13,6 +13,21 @@
                 <img src="/static/logo.png" alt="The BnBugs">
             </a>
         </div>
+        <div id="logout_button">
+            <a href="/logout">
+                <button type="submit">Logout</button>
+            </a>
+        </div>
+        <div id="requests_button">
+            <a href="/requests">
+                <button type="submit">View Requests</button>
+            </a>
+        </div>
+        <div id="list_button">
+            <a href="/spaces">
+                <button type="submit">View Spaces</button>
+            </a>
+        </div>
         <h1>Request A Space</h1>
         <p>Hi {{ user.user_name }} are you ready to book:</p>
         <h2>{{ space.space_name }}</h2>
