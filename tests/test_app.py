@@ -232,9 +232,9 @@ def test_get_first_three_spaces(db_connection, test_web_address, page):
     space_blocks = page.locator("#our_spaces > div")
 
     expected_texts = [
-        "Name: Bee Hive\n\nDescription: A peaceful hexagonal room",
-        "Name: Ant farm\n\nDescription: Bite-sized luxury pod",
-        "Name: Ladybug Residence\n\nDescription: Luxury spots available nightly"
+        "Name: Bee Hive\n\nDescription: A peaceful hexagonal room\n\nRequest this space",
+        "Name: Ant farm\n\nDescription: Bite-sized luxury pod\n\nRequest this space",
+        "Name: Ladybug Residence\n\nDescription: Luxury spots available nightly\n\nRequest this space"
     ]
 
     for i in range(3):

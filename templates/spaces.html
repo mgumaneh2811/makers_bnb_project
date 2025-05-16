@@ -33,11 +33,17 @@
             top: 30px;
             right: 40px;
         }
+        
+        #requests_button {
+            position: absolute;
+            top: 30px;
+            right: 130px;
+        }
 
         #logout_button {
             position: absolute;
             top: 30px;
-            right: 150px;
+            right: 230px;
         }
 
         #space_availability {
@@ -83,7 +89,11 @@
             <button type="submit">Logout</button>
         </a>
     </div>
-
+    <div id="requests_button">
+        <a href="/requests">
+            <button type="submit">View Requests</button>
+        </a>
+    </div>
     <div id="list_button">
 
         <a href="{{ url_for('list_a_space') }}">
@@ -114,6 +124,7 @@
     <div>
         <p><strong>Name:</strong> {{ space.space_name }}</p>
         <p><strong>Description:</strong> {{ space.spaces_description }}</p>
+        <p><a href="/spaces/request/{{ space.id }}">Request this space</a></p>
     </div>
     {% endfor %}
 </div>
