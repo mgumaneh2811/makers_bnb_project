@@ -220,5 +220,22 @@ def test_post_new_space(db_connection, web_client):
     """
     db_connection.seed("seeds/makersbnb_database.sql")
     response = web_client.post('/spaces/new', data={'space_name': 'Butternut', 'spaces_description': 'Green room', 'price_per_night': 28, 'available_from_date': '2025-11-02', 'available_to_date': '2025-11-15', 'user_id': 2})
-    assert response.status_code == 200
-    assert response.data.decode('utf-8') == ''
+    assert response.status_code == 302
+    assert response.headers['Location'] == '/list_a_space'
+
+def test_get_first_three_spaces(db_connection, test_web_address, page):
+    db_connection.seed("seeds/makersbnb_database.sql")
+    page.goto(f"http://{test_web_address}/spaces")
+
+    page.locator("#our_spaces > div").first.wait_for(timeout=5000)
+
+    space_blocks = page.locator("#our_spaces > div")
+
+    expected_texts = [
+        "Name: Bee Hive\n\nDescription: A peaceful hexagonal room",
+        "Name: Ant farm\n\nDescription: Bite-sized luxury pod",
+        "Name: Ladybug Residence\n\nDescription: Luxury spots available nightly"
+    ]
+
+    for i in range(3):
+        assert space_blocks.nth(i).inner_text() == expected_texts[i]

@@ -71,8 +71,10 @@
 </head>
 <body>
     <div id="logo">
-        <a href="/">
-            <img src="/static/logo.png" alt="The BnBugs">
+
+        <a href="{{ url_for('get_index') }}">
+            <img src="../static/logo.png" alt="The BnBugs">
+
         </a>
     </div>
     
@@ -83,7 +85,9 @@
     </div>
 
     <div id="list_button">
-        <a href="/spaces/new">
+
+        <a href="{{ url_for('list_a_space') }}">
+
             <button type="submit">List a Space</button>
         </a>
     </div>
@@ -94,27 +98,25 @@
     </div>
     
     <div id="space_availability">
-        <form action="/spaces/new" method="post">
-        <label for="available_from">Available from (DD/MM/YYY):</label><br>
-        <input type="date" name="available_from" id="available_from"><br>
+    <form action="/spaces" method="get">
+        <label for="available_from_date">Available from (DD/MM/YYYY):</label><br>
+        <input type="date" name="available_from_date" id="available_from_date" value="{{ selected_from }}"><br>
 
-        <label for="available_to">Available to (DD/MM/YYYY):</label><br>
-        <input type="date" name="available_to_date" id="available_to"><br>
+        <label for="available_to_date">Available to (DD/MM/YYYY):</label><br>
+        <input type="date" name="available_to_date" id="available_to_date" value="{{ selected_to }}"><br>
 
         <button type="submit">Search Spaces</button>
-        </form>
+    </form>
+</div>
+
+<div id="our_spaces">
+    {% for space in spaces %}
+    <div>
+        <p><strong>Name:</strong> {{ space.space_name }}</p>
+        <p><strong>Description:</strong> {{ space.spaces_description }}</p>
     </div>
-    
-    <div id="our_spaces">
-        {% for space in spaces %}
-            {% if space.available_from <= selected_to and space.available_to >= selected_from %}
-            <div>
-            <p><strong>Name:</strong> {{space.name}}</p>
-            <p><strong>Description:</strong> {{space.description}}</p>
-            </div>
-            {% endif %}
-        {% endfor %}
-    </div>
+    {% endfor %}
+</div>
 
 </body>
 </html>
