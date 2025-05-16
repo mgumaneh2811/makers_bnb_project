@@ -45,7 +45,7 @@ def test_create_user_route(page, test_web_address, db_connection):
         User(3, 'Trudie', 'abcdef', 'trudie@example.com', '018118181')
     ]
 
-    title_element = page.locator(".mb-4")
+    title_element = page.locator("h1")
     expect(title_element).to_have_text("Log in to Makers BnB")
 
 
@@ -99,7 +99,7 @@ def test_new_spaces_form(page, test_web_address):
     available_to_label = page.locator("#available_to_date")
     assert available_to_label.is_visible()
 
-    submit_button = page.locator("button[type='submit']")
+    submit_button = page.locator("input[type='submit']:has-text('Create Space')")
     assert submit_button.is_visible()
 
     # submit_button = page.locator("submit")
@@ -113,7 +113,7 @@ def test_login_page_exists(page, test_web_address):
     form = page.locator("form[action='/login']")
     assert form.is_visible()
 
-    title = page.locator("h1.mb-4")
+    title = page.locator("h1")
     assert title.is_visible()
     assert title.text_content() == "Log in to Makers BnB"
 
@@ -123,14 +123,31 @@ def test_login_page_exists(page, test_web_address):
     password_field = page.locator("div.mb-3", has_text="password")
     assert password_field.is_visible()
 
-    # submit_button = page.locator("form[action='/login'] button[type='submit']")
-    # assert submit_button.is_visible()
+
+def test_login_redirects_to_spaces(page, test_web_address, db_connection):
+    db_connection.seed("seeds/makersbnb_database.sql")
+    page.goto(f"http://{test_web_address}/login")
+
+    page.fill("input[name=user_name]", "hannah@example.com")
+    page.fill("input[name=password]", "123456")
+    page.click("input[type=submit]")
+
+    title = page.locator("h1")
+    expect(title).to_have_text("Reserve Exquisite Accommodation")
+
     
 def test_request_a_space_no_existing_bookings(page, test_web_address, db_connection):
     db_connection.seed("seeds/makersbnb_database.sql")
 
     test_space_id = 3
 
+    # Log in
+    page.goto(f"http://{test_web_address}/login")
+    page.fill("input[name=user_name]", "bridget@example.com")
+    page.fill("input[name=password]", "qwerty")
+    page.click("input[type=submit]")
+
+    # Now we can go
     page.goto(f"http://{test_web_address}/spaces/request/{test_space_id}")
     page.fill("input[name=requested_date]", "2025-08-13")
     page.click("input[type=submit]")
@@ -152,6 +169,12 @@ def test_request_a_space_with_existing_bookings(page, test_web_address, db_conne
 
     test_space_id = 2
 
+    # Log in
+    page.goto(f"http://{test_web_address}/login")
+    page.fill("input[name=user_name]", "bridget@example.com")
+    page.fill("input[name=password]", "qwerty")
+    page.click("input[type=submit]")
+
     page.goto(f"http://{test_web_address}/spaces/request/{test_space_id}")
 
     booking_status_title = page.locator("h3.bookings_status_title")
@@ -168,6 +191,12 @@ def test_show_my_requests(page, test_web_address, db_connection):
     db_connection.seed("seeds/makersbnb_database.sql")
 
     test_user_id = 1
+
+    # Log in
+    page.goto(f"http://{test_web_address}/login")
+    page.fill("input[name=user_name]", "bridget@example.com")
+    page.fill("input[name=password]", "qwerty")
+    page.click("input[type=submit]")
 
     page.goto(f"http://{test_web_address}/requests")
 

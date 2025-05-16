@@ -34,6 +34,12 @@
             right: 40px;
         }
 
+        #logout_button {
+            position: absolute;
+            top: 30px;
+            right: 150px;
+        }
+
         #our_spaces {
             text-align: left;
             margin-top: 30px;
@@ -63,13 +69,23 @@
 </head>
 <body>
     <div id="logo">
+
         <a href="{{ url_for('get_index') }}">
             <img src="../static/logo.png" alt="Bugsy's">
+
+        </a>
+    </div>
+
+        <div id="logout_button">
+        <a href="/logout">
+            <button type="submit">Logout</button>
         </a>
     </div>
     
     <div id="list_button">
+
         <a href="{{ url_for('get_all_spaces') }}">
+
             <button type="submit">View Spaces</button>
         </a>
     </div>
