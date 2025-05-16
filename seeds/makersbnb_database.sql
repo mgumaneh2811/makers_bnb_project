@@ -15,8 +15,6 @@ CREATE TABLE users (
     phone VARCHAR(255)
 );
 
-
-
 CREATE TABLE spaces (
     id SERIAL PRIMARY KEY,
     space_name VARCHAR(255),

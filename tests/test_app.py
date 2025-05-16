@@ -45,7 +45,7 @@ def test_create_user_route(page, test_web_address, db_connection):
         User(3, 'Trudie', 'abcdef', 'trudie@example.com', '018118181')
     ]
 
-    title_element = page.locator(".mb-4")
+    title_element = page.locator("h1")
     expect(title_element).to_have_text("Log in to Makers BnB")
 
 
@@ -99,7 +99,7 @@ def test_new_spaces_form(page, test_web_address):
     available_to_label = page.locator("#available_to_date")
     assert available_to_label.is_visible()
 
-    submit_button = page.locator("button[type='submit']")
+    submit_button = page.locator("input[type='submit']:has-text('Create Space')")
     assert submit_button.is_visible()
 
     # submit_button = page.locator("submit")
@@ -113,7 +113,7 @@ def test_login_page_exists(page, test_web_address):
     form = page.locator("form[action='/login']")
     assert form.is_visible()
 
-    title = page.locator("h1.mb-4")
+    title = page.locator("h1")
     assert title.is_visible()
     assert title.text_content() == "Log in to Makers BnB"
 
