@@ -124,8 +124,7 @@
             <label for="available_to"><strong>Available to (DD/MM/YYYY):</strong></label>
             <input type="date" name="available_to_date" id="available_to_date"><br><br><br>
 
-            <label for="user_id"><strong>User ID:</strong></label>
-            <input type="number" id="user_id" name="user_id" value=""><br><br><br>
+            <input type="hidden" id="user_id" name="user_id" value="{{ user.id }}">
 
             <input type="submit" value="Create Space"><br><br><br>
         </form>

@@ -63,11 +63,11 @@ def post_users():
 
 @app.route('/spaces/new', methods=['GET'])
 def get_list_a_space():
-    return render_template('list_a_space.html')
+    return render_template('list_a_space.html', user=current_user)
 
 @app.route("/list_a_space")
 def list_a_space():
-    return render_template("list_a_space.html")
+    return render_template("list_a_space.html", user=current_user)
 
 
 # @app.route('/login', methods=['GET'])
