@@ -62,14 +62,12 @@ def post_users():
     return redirect('/login')
 
 @app.route('/spaces/new', methods=['GET'])
-@login_required
 def get_list_a_space():
-    return render_template('list_a_space.html', user = current_user)
+    return render_template('list_a_space.html')
 
 @app.route("/list_a_space")
-@login_required
 def list_a_space():
-    return render_template("list_a_space.html", user = current_user)
+    return render_template("list_a_space.html")
 
 
 # @app.route('/login', methods=['GET'])
