@@ -1,7 +1,7 @@
 class Space:
     
     def __init__(self, id, space_name, spaces_description, price_per_night, 
-                 available_from_date, available_to_date, user_id):
+                available_from_date, available_to_date, user_id):
         self.id = id
         self.space_name = space_name
         self.spaces_description = spaces_description
@@ -16,10 +16,4 @@ class Space:
     
 
     def __eq__(self, other):
-         return (self.id == other.id and
-         self.space_name == other.space_name and
-         self.spaces_description == other.spaces_description and
-         self.price_per_night == other.price_per_night and
-         self.available_from_date == other.available_from_date and
-         self.available_to_date == other.available_to_date and
-         self.user_id == other.user_id)
+        return self.__dict__ == other.__dict__

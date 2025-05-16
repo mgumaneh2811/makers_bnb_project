@@ -18,19 +18,14 @@ from lib.space_repository import SpaceRepository
 # Create a new Flask app
 app = Flask(__name__)
 
-
-
 login_manager = LoginManager()
 login_manager.init_app(app)
 load_dotenv()
 app.secret_key = os.getenv('SECRET_KEY')
 
-# == Your Routes Here ==
 
-# GET /index
-# Returns the homepage
-# Try it:
-#   ; open http://localhost:5001/index
+# == Get Index Page ==
+
 @app.route('/index', methods=['GET'])
 def get_index():
     return render_template('index.html')
@@ -41,12 +36,17 @@ def get_home():
         return redirect('/spaces')
     else:
         return redirect('/index')
+    
+
+# == Manages User Sessions ==
 
 @login_manager.user_loader
 def load_user(user_id):
     user_repo = UserRepository(get_flask_database_connection(app))
     return user_repo.find(user_id)
 
+
+# == Creates New User ==
 
 @app.route('/users', methods=['POST'])
 def post_users():
@@ -61,6 +61,9 @@ def post_users():
     repository.create(user)
     return redirect('/login')
 
+
+# == List a Space Page ==
+
 @app.route('/spaces/new', methods=['GET'])
 def get_list_a_space():
     return render_template('list_a_space.html')
@@ -70,9 +73,7 @@ def list_a_space():
     return render_template("list_a_space.html")
 
 
-# @app.route('/login', methods=['GET'])
-# def get_login_page():
-#     return render_template('login.html')
+# == Login Page ==
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -89,17 +90,17 @@ def login():
     
     return render_template('login.html', title='Log In', form=form)
 
+
+# == Logs User Out ==
+
 @app.route("/logout")
 @login_required
 def logout():
-    # user_repo = UserRepository(get_flask_database_connection(app))
-    # user = user_repo.find_by_email(request.form["user_name"])
     logout_user()
     return redirect('/login')
 
-# @app.route('/spaces', methods=['GET'])
-# def get_spaces():
-#     return render_template('spaces.html')
+
+# == Create New Space ==
 
 @app.route('/spaces/new', methods =['POST'])
 def post_new_space():
@@ -110,6 +111,9 @@ def post_new_space():
     space = Space(None, request.form['space_name'], request.form['spaces_description'], request.form['price_per_night'], request.form['available_from_date'], request.form['available_to_date'], request.form['user_id'])
     repository.create(space)
     return redirect(url_for('list_a_space'))
+
+
+# == View Requests - Current User ==
 
 @app.route('/spaces/request/<space_id>', methods=['GET'])
 @login_required
@@ -122,6 +126,9 @@ def get_request_space(space_id):
     space = space_repo.find(space_id)
 
     return render_template('request_a_space.html', user = current_user, space = space, bookings = bookings)
+
+
+# == Request a Space ==
 
 @app.route('/spaces/request', methods=['POST'])
 @login_required
@@ -139,6 +146,9 @@ def post_request_space():
 
     requested_date_str = datetime.strftime(requested_date,"%d %B %Y")
     return render_template('space_requested.html', user = current_user, space=space, requested_date_str = requested_date_str )
+
+
+# == View All Requests ==
 
 @app.route('/requests', methods=['GET'])
 @login_required
@@ -176,6 +186,9 @@ def collate_booking_details(booking):
 
     return booking_details
 
+
+# == View Your Booking Requests ==
+
 @app.route('/requests/<id>', methods=['GET'])
 @login_required
 def get_request(id):
@@ -202,6 +215,9 @@ def get_request(id):
 
     return render_template('view_request.html', id=id, page_mode=page_mode, other_requests=other_requests_with_details, space=space, booking=booking, requesting_user=requesting_user)
 
+
+# == Approve or Deny Requests ==
+
 @app.route('/requests/<id>', methods=['POST'])
 @login_required
 def get_user_request_update(id):
@@ -226,6 +242,8 @@ def get_user_request_update(id):
     
     return redirect("/requests")
 
+# == Viewing All Spaces or Filtered Spaces ==
+
 
 @app.route("/spaces", methods=['GET'])
 def get_all_spaces():
@@ -247,8 +265,8 @@ def get_all_spaces():
     return render_template("spaces.html", spaces=all_spaces, selected_from="", selected_to="")
 
 
-# These lines start the server if you run this file directly
-# They also start the server configured to use the test database
-# if started in test mode.
+
+# == SERVER ==
+
 if __name__ == '__main__':
     app.run(debug=True, port=int(os.environ.get('PORT', 5001)))
