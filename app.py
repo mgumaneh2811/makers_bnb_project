@@ -37,10 +37,10 @@ def get_index():
 
 @app.route('/', methods=[ 'GET' ])
 def get_home():
-    if current_user != None:
-        return redirect('/index')
-    else:
+    if current_user.is_authenticated:
         return redirect('/spaces')
+    else:
+        return redirect('/index')
 
 @login_manager.user_loader
 def load_user(user_id):
