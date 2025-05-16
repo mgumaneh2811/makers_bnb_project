@@ -28,7 +28,9 @@
                 <button type="submit">View Spaces</button>
             </a>
         </div>
-        <h1>View Request</h1>
+        <div id="header">
+            <h1>View Request</h1>
+        </div>
         {% if page_mode == 'approver' %}
             <p>Booking request for {{ space.space_name }}</p>
             <p>From: {{ requesting_user.user_name }}, {{ requesting_user.email }}</p>

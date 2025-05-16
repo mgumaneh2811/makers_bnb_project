@@ -28,7 +28,9 @@
                 <button type="submit">View Spaces</button>
             </a>
         </div>
-        <h1>{{ user.user_name }}'s Requests</h1>
+        <div id="header">
+            <h1>{{ user.user_name }}'s Requests</h1>
+        </div>
         <h2>Requests I've made</h2>
         {% if bookings_made | length > 0 %}
             {% for booking_made in bookings_made %}
