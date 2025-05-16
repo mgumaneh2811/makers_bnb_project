@@ -21,8 +21,11 @@ class UserRepository:
 
     def find_by_email(self, email):
         rows = self._connection.execute('SELECT * FROM users WHERE email = %s', [ email ])
-        row = rows[0]
-        return User(row['id'],row['user_name'], row['password'], row['email'],row['phone'])
+        if len(rows) == 0:
+            return None
+        else:
+            row = rows[0]
+            return User(row['id'],row['user_name'], row['password'], row['email'],row['phone'])
 
     def delete(self,id):
         rows = self._connection.execute('DELETE FROM users WHERE id = %s', [ id ])
