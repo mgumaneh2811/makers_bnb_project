@@ -76,15 +76,16 @@ def list_a_space():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    print(request.form)
     form = LoginForm(request.form)
     if form.validate_on_submit():
         user_repo = UserRepository(get_flask_database_connection(app))
         user = user_repo.find_by_email(request.form["user_name"])
-        if user.password == request.form["password"]:
+        if user is not None and user.password == request.form["password"]:
             login_user(user)
-        # Change /index when we know the name of the list of spaces
             return redirect('/spaces')
+        else:
+            flash('Login unsuccessful. Please check email and password.', 'danger')
+            return redirect(url_for('login'))
     
     return render_template('login.html', title='Log In', form=form)
 
