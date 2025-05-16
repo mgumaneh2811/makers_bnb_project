@@ -13,7 +13,24 @@
                 <img src="/static/logo.png" alt="The BnBugs">
             </a>
         </div>
-        <h1>View Request</h1>
+        <div id="logout_button">
+            <a href="/logout">
+                <button type="submit">Logout</button>
+            </a>
+        </div>
+        <div id="requests_button">
+            <a href="/requests">
+                <button type="submit">View Requests</button>
+            </a>
+        </div>
+        <div id="list_button">
+            <a href="/spaces">
+                <button type="submit">View Spaces</button>
+            </a>
+        </div>
+        <div id="header">
+            <h1>View Request</h1>
+        </div>
         {% if page_mode == 'approver' %}
             <p>Booking request for {{ space.space_name }}</p>
             <p>From: {{ requesting_user.user_name }}, {{ requesting_user.email }}</p>
