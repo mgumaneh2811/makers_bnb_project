@@ -35,6 +35,13 @@ app.secret_key = os.getenv('SECRET_KEY')
 def get_index():
     return render_template('index.html')
 
+@app.route('/', methods=[ 'GET' ])
+def get_home():
+    if current_user != None:
+        return redirect('/index')
+    else:
+        return redirect('/spaces')
+
 @login_manager.user_loader
 def load_user(user_id):
     user_repo = UserRepository(get_flask_database_connection(app))
